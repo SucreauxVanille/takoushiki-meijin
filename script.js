@@ -21,38 +21,38 @@ buttons.forEach(b => {
   btn.textContent = b;
   btn.dataset.key = b;
 
-btn.addEventListener("pointerdown", (e) => {
-  e.preventDefault(); // ←これ追加（重要）
+  // 通常タップ（全ボタン）
+  btn.addEventListener("click", () => {
+    handleInput(b);
+  });
 
-  clearTimeout(timeout);
-  clearInterval(interval);
+  // ★ 長押しは「消」だけ
+  if (b === "消") {
+    let interval = null;
+    let timeout = null;
 
-  handleInput(b);
+    btn.addEventListener("pointerdown", () => {
+      timeout = setTimeout(() => {
+        interval = setInterval(() => {
+          handleInput("消");
+        }, 60);
+      }, 300);
+    });
 
-  if (b === "OK") return;
+    const stop = () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
 
-  timeout = setTimeout(() => {
-    interval = setInterval(() => {
-      handleInput(b);
-    }, b === "消" ? 60 : 100);
-  }, 300);
-});
+    btn.addEventListener("pointerup", stop);
+    btn.addEventListener("pointerleave", stop);
+    btn.addEventListener("pointercancel", stop);
+  }
 
-const stop = () => {
-  clearTimeout(timeout);
-  clearInterval(interval);
-
-  timeout = null;
-  interval = null;
-};
-
-btn.addEventListener("pointerup", stop);
-btn.addEventListener("pointerleave", stop);
-btn.addEventListener("pointercancel", stop);
-btn.addEventListener("touchend", stop);
-btn.addEventListener("touchcancel", stop);
   container.appendChild(btn);
 });
+
+
 // ===== 表示フォーマット =====
 function formatExpression(expr) {
   return expr
@@ -68,25 +68,14 @@ function updateDisplay() {
 }
 
 // ===== 入力処理 =====
-let isChecking = false;
-
 function handleInput(val){
-
-  if(val === "OK"){
-    if (isChecking) return; // ←これ追加
-    isChecking = true;
-
-    checkAnswer();
-
-    setTimeout(() => {
-      isChecking = false;
-    }, 300);
-
-    return;
-  }
 
   if(val === "消"){
     currentAnswer = currentAnswer.slice(0,-1);
+
+  }else if(val === "OK"){
+    checkAnswer();
+    return;
 
   }else{
     if(val === "＋") val = "+";
