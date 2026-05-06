@@ -129,6 +129,38 @@ button:active {
   background: #43a047;
 }
 
+// トースト
+#toast {
+  position: fixed;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 12px;
+
+  font-size: clamp(16px, 4vw, 20px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 999;
+}
+
+#toast.show {
+  opacity: 1;
+}
+
+/* 成功・失敗の色分け（任意） */
+#toast.success {
+  background: #4caf50;
+}
+
+#toast.error {
+  background: #f44336;
+}
 /* ===== スマホ最適化 ===== */
 @media (max-width: 480px) {
   .bottom {
