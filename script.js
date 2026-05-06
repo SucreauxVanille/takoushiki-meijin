@@ -21,15 +21,14 @@ buttons.forEach(b => {
   btn.textContent = b;
   btn.dataset.key = b;
 
-btn.addEventListener("pointerdown", () => {
+btn.addEventListener("pointerdown", (e) => {
+  e.preventDefault(); // ←これ追加（重要）
 
-  // まず既存タイマーを完全停止（超重要）
   clearTimeout(timeout);
   clearInterval(interval);
 
   handleInput(b);
 
-  // OKは長押し禁止
   if (b === "OK") return;
 
   timeout = setTimeout(() => {
@@ -39,10 +38,13 @@ btn.addEventListener("pointerdown", () => {
   }, 300);
 });
 
-  const stop = () => {
-    clearTimeout(timeout);
-    clearInterval(interval);
-  };
+const stop = () => {
+  clearTimeout(timeout);
+  clearInterval(interval);
+
+  timeout = null;
+  interval = null;
+};
 
 btn.addEventListener("pointerup", stop);
 btn.addEventListener("pointerleave", stop);
@@ -66,17 +68,27 @@ function updateDisplay() {
 }
 
 // ===== 入力処理 =====
+let isChecking = false;
+
 function handleInput(val){
+
+  if(val === "OK"){
+    if (isChecking) return; // ←これ追加
+    isChecking = true;
+
+    checkAnswer();
+
+    setTimeout(() => {
+      isChecking = false;
+    }, 300);
+
+    return;
+  }
 
   if(val === "消"){
     currentAnswer = currentAnswer.slice(0,-1);
 
-  }else if(val === "OK"){
-    checkAnswer();
-    return;
-
   }else{
-    // 表示→内部変換
     if(val === "＋") val = "+";
     if(val === "－") val = "-";
 
@@ -85,7 +97,6 @@ function handleInput(val){
 
   updateDisplay();
 }
-
 // ===== 項フォーマット =====
 function formatTerm(coef, variable) {
   if (coef === 0) return null;
