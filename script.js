@@ -1,5 +1,6 @@
 const questionEl = document.getElementById("question");
-const answerEl = document.getElementById("answer");
+// ★ input → div に変更
+const answerEl = document.getElementById("answerDisplay");
 
 let currentAnswer = "";
 
@@ -16,32 +17,43 @@ const container = document.getElementById("buttons");
 buttons.forEach(b => {
   const btn = document.createElement("button");
   btn.textContent = b;
+
+  // ボタン識別用（CSS用）
+  btn.dataset.key = b;
+
   btn.onclick = () => handleInput(b);
   container.appendChild(btn);
 });
 
-//フォント
+// ===== フォーマット（x,yをイタリック） =====
 function formatExpression(expr) {
   return expr
     .replace(/x/g, '<span class="var">x</span>')
     .replace(/y/g, '<span class="var">y</span>');
 }
 
-// 使用
-questionEl.innerHTML = formatExpression("3x + 2y");
-// 入力処理
+// ===== 表示更新 =====
+function updateDisplay() {
+  answerEl.innerHTML = formatExpression(currentAnswer);
+}
+
+// ===== 入力処理 =====
 function handleInput(val){
   if(val === "←"){
     currentAnswer = currentAnswer.slice(0,-1);
+
   }else if(val === "OK"){
     checkAnswer();
+    return;
+
   }else{
     currentAnswer += val;
   }
-  answerEl.value = currentAnswer;
+
+  updateDisplay();
 }
 
-// 問題生成
+// ===== 問題生成 =====
 let correct;
 
 function newQuestion(){
@@ -49,7 +61,9 @@ function newQuestion(){
 
   let a = rand(), b = rand(), c = rand(), d = rand();
 
-  questionEl.textContent = `${a}x + ${b}y + ${c}x + ${d}y`;
+  // 問題表示（フォーマット適用）
+  const expr = `${a}x + ${b}y + ${c}x + ${d}y`;
+  questionEl.innerHTML = formatExpression(expr);
 
   // 正解（整理）
   const xSum = a + c;
@@ -58,16 +72,18 @@ function newQuestion(){
   correct = `${xSum}x+${ySum}y`;
 }
 
+// ===== 採点 =====
 function checkAnswer(){
   if(currentAnswer === correct){
     alert("正解！");
     newQuestion();
     currentAnswer = "";
-    answerEl.value = "";
+    updateDisplay();
   }else{
     alert("もう一度！");
   }
 }
-answerDisplay.innerHTML = formatExpression(currentAnswer);
+
 // 初期化
 newQuestion();
+updateDisplay();
