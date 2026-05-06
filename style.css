@@ -12,6 +12,11 @@ body {
   background: #f7fbfc;
 }
 
+.var {
+  font-family: "Times New Roman", serif;
+  font-style: italic;
+  font-weight: normal;
+}
 /* ===== 上半分（問題エリア） ===== */
 .top {
   flex: 1;
