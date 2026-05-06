@@ -181,7 +181,17 @@ function parsePolynomial(expr) {
 
   return { x: xCoef, y: yCoef };
 }
+// トースト
+const toast = document.getElementById("toast");
 
+function showToast(message, type = "") {
+  toast.textContent = message;
+  toast.className = "show " + type;
+
+  setTimeout(() => {
+    toast.className = "";
+  }, 1500);
+}
 // ===== 採点 =====
 function checkAnswer(){
 
@@ -189,12 +199,12 @@ function checkAnswer(){
   const ans  = parsePolynomial(correct);
 
   if(user && ans && user.x === ans.x && user.y === ans.y){
-    alert("正解！よくできました！");
+    showToast("正解！よくできました！", "success");
     newQuestion();
     currentAnswer = "";
     updateDisplay();
   }else{
-    alert("おしい！もう一度やってみよう！");
+    showToast("おしい！もう一度やってみよう！", "error");
   }
 }
 
