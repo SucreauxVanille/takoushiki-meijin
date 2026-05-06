@@ -1,10 +1,9 @@
 const questionEl = document.getElementById("question");
-// ★ input → div に変更
 const answerEl = document.getElementById("answerDisplay");
 
 let currentAnswer = "";
 
-// ボタン定義
+// ===== ボタン定義 =====
 const buttons = [
   "7","8","9","+",
   "4","5","6","-",
@@ -12,20 +11,17 @@ const buttons = [
   "0","x","y","OK"
 ];
 
-// ボタン生成
+// ===== ボタン生成 =====
 const container = document.getElementById("buttons");
 buttons.forEach(b => {
   const btn = document.createElement("button");
   btn.textContent = b;
-
-  // ボタン識別用（CSS用）
-  btn.dataset.key = b;
-
+  btn.dataset.key = b; // CSS用
   btn.onclick = () => handleInput(b);
   container.appendChild(btn);
 });
 
-// ===== フォーマット（x,yをイタリック） =====
+// ===== フォント（x,yイタリック） =====
 function formatExpression(expr) {
   return expr
     .replace(/x/g, '<span class="var">x</span>')
@@ -53,6 +49,42 @@ function handleInput(val){
   updateDisplay();
 }
 
+// ===== 項フォーマット（単体） =====
+function formatTerm(coef, variable) {
+  if (coef === 0) return null;
+
+  if (coef === 1) return variable;
+  if (coef === -1) return "-" + variable;
+
+  return coef + variable;
+}
+
+// ===== 多項式フォーマット（正解用） =====
+function formatPolynomial(xCoef, yCoef) {
+  let parts = [];
+
+  // x項
+  if (xCoef !== 0) {
+    if (xCoef === 1) parts.push("x");
+    else if (xCoef === -1) parts.push("-x");
+    else parts.push(xCoef + "x");
+  }
+
+  // y項
+  if (yCoef !== 0) {
+    if (yCoef === 1) parts.push("y");
+    else if (yCoef === -1) parts.push("-y");
+    else parts.push(yCoef + "y");
+  }
+
+  if (parts.length === 0) return "0";
+
+  let result = parts.join("+");
+  result = result.replace(/\+\-/g, "-");
+
+  return result;
+}
+
 // ===== 問題生成 =====
 let correct;
 
@@ -61,15 +93,24 @@ function newQuestion(){
 
   let a = rand(), b = rand(), c = rand(), d = rand();
 
-  // 問題表示（フォーマット適用）
-  const expr = `${a}x + ${b}y + ${c}x + ${d}y`;
+  // 問題の項を生成（0除去・1処理）
+  let terms = [
+    formatTerm(a, "x"),
+    formatTerm(b, "y"),
+    formatTerm(c, "x"),
+    formatTerm(d, "y")
+  ].filter(t => t !== null);
+
+  let expr = terms.join(" + ").replace(/\+\s\-/g, "- ");
+
+  // 表示（x,yイタリック）
   questionEl.innerHTML = formatExpression(expr);
 
-  // 正解（整理）
+  // 正解生成（整理済み）
   const xSum = a + c;
   const ySum = b + d;
 
-  correct = `${xSum}x+${ySum}y`;
+  correct = formatPolynomial(xSum, ySum);
 }
 
 // ===== 採点 =====
@@ -84,6 +125,6 @@ function checkAnswer(){
   }
 }
 
-// 初期化
+// ===== 初期化 =====
 newQuestion();
 updateDisplay();
