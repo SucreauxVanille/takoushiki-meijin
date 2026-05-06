@@ -115,15 +115,56 @@ function newQuestion(){
   correct = formatPolynomial(xSum, ySum);
 }
 
+// 係数比較
+function parsePolynomial(expr) {
+  let xCoef = 0;
+  let yCoef = 0;
+
+  // "+-"対策
+  expr = expr.replace(/\+\-/g, "-");
+
+  // 符号で分割（例: 2x-3y → ["2x", "-3y"]）
+  let terms = expr.match(/[+-]?[^+-]+/g);
+
+  if (!terms) return null;
+
+  terms.forEach(term => {
+    if (term.includes("x")) {
+      let coef = term.replace("x", "");
+
+      if (coef === "" || coef === "+") coef = 1;
+      else if (coef === "-") coef = -1;
+      else coef = parseInt(coef);
+
+      xCoef += coef;
+
+    } else if (term.includes("y")) {
+      let coef = term.replace("y", "");
+
+      if (coef === "" || coef === "+") coef = 1;
+      else if (coef === "-") coef = -1;
+      else coef = parseInt(coef);
+
+      yCoef += coef;
+    }
+  });
+
+  return { x: xCoef, y: yCoef };
+}
+
 // ===== 採点 =====
 function checkAnswer(){
-  if(currentAnswer === correct){
+
+  const user = parsePolynomial(currentAnswer);
+  const ans  = parsePolynomial(correct);
+
+  if(user && ans && user.x === ans.x && user.y === ans.y){
     alert("正解！よくできました！");
     newQuestion();
     currentAnswer = "";
     updateDisplay();
   }else{
-    alert("もう一度やってみよう！");
+    alert("おしい！もう一度やってみよう！");
   }
 }
 
