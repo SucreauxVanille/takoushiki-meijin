@@ -1,6 +1,8 @@
 const questionEl = document.getElementById("question");
 const answerEl = document.getElementById("answerDisplay");
 
+let interval = null;
+let timeout = null;
 let currentAnswer = "";
 
 // ===== ボタン定義（表示は全角）=====
@@ -19,13 +21,15 @@ buttons.forEach(b => {
   btn.textContent = b;
   btn.dataset.key = b;
 
-  let interval = null;
-  let timeout = null;
-
 btn.addEventListener("pointerdown", () => {
+
+  // まず既存タイマーを完全停止（超重要）
+  clearTimeout(timeout);
+  clearInterval(interval);
+
   handleInput(b);
 
-  // ★ OKは長押し無効（ここが追加ポイント）
+  // OKは長押し禁止
   if (b === "OK") return;
 
   timeout = setTimeout(() => {
@@ -40,11 +44,11 @@ btn.addEventListener("pointerdown", () => {
     clearInterval(interval);
   };
 
-  btn.addEventListener("pointerup", stop);
-  btn.addEventListener("pointerleave", stop);
-  btn.addEventListener("pointercancel", stop);
-  btn.addEventListener("touchend", stop);
-  btn.addEventListener("touchcancel", stop);
+btn.addEventListener("pointerup", stop);
+btn.addEventListener("pointerleave", stop);
+btn.addEventListener("pointercancel", stop);
+btn.addEventListener("touchend", stop);
+btn.addEventListener("touchcancel", stop);
   container.appendChild(btn);
 });
 // ===== 表示フォーマット =====
