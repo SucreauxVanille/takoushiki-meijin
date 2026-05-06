@@ -12,12 +12,40 @@ const buttons = [
 ];
 
 // ===== ボタン生成 =====
-const container = document.getElementById("buttons");
 buttons.forEach(b => {
   const btn = document.createElement("button");
   btn.textContent = b;
   btn.dataset.key = b;
-  btn.onclick = () => handleInput(b);
+
+  let interval = null;
+  let timeout = null;
+
+  // 押した瞬間
+  btn.addEventListener("pointerdown", () => {
+    handleInput(b);
+
+    // 長押し開始（300ms後）
+    timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        handleInput(b);
+      }, 100); // 連続入力速度
+    }, 300);
+  });
+if (b === "消") {
+  interval = setInterval(() => {
+    handleInput(b);
+  }, 60);
+}
+  // 離したら停止
+  const stop = () => {
+    clearTimeout(timeout);
+    clearInterval(interval);
+  };
+
+  btn.addEventListener("pointerup", stop);
+  btn.addEventListener("pointerleave", stop);
+  btn.addEventListener("pointercancel", stop);
+
   container.appendChild(btn);
 });
 
