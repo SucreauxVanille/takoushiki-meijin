@@ -62,7 +62,13 @@ button {
   background: #e3f2fd;
   min-height: 60px;
   font-weight: bold;
-
+  
+/* x,yだけ指定 */
+button[data-key="x"],
+button[data-key="y"] {
+  font-family: "Times New Roman", serif;
+  font-style: italic;
+}
   /* タップ感 */
   transition: transform 0.05s, background 0.1s;
 }
