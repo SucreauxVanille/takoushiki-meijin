@@ -7,8 +7,8 @@ let currentAnswer = "";
 const buttons = [
   "7","8","9","+",
   "4","5","6","-",
-  "1","2","3","x",
-  "0","y","←","OK"
+  "1","2","3","←",
+  "0","x","y","OK"
 ];
 
 // ボタン生成
@@ -20,6 +20,15 @@ buttons.forEach(b => {
   container.appendChild(btn);
 });
 
+//フォント
+function formatExpression(expr) {
+  return expr
+    .replace(/x/g, '<span class="var">x</span>')
+    .replace(/y/g, '<span class="var">y</span>');
+}
+
+// 使用
+questionEl.innerHTML = formatExpression("3x + 2y");
 // 入力処理
 function handleInput(val){
   if(val === "←"){
@@ -59,6 +68,6 @@ function checkAnswer(){
     alert("もう一度！");
   }
 }
-
+answerDisplay.innerHTML = formatExpression(currentAnswer);
 // 初期化
 newQuestion();
