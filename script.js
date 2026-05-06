@@ -3,7 +3,7 @@ const answerEl = document.getElementById("answerDisplay");
 
 let currentAnswer = "";
 
-// ===== ボタン定義 =====
+// ===== ボタン定義（表示は全角）=====
 const buttons = [
   "7","8","9","＋",
   "4","5","6","－",
@@ -16,14 +16,16 @@ const container = document.getElementById("buttons");
 buttons.forEach(b => {
   const btn = document.createElement("button");
   btn.textContent = b;
-  btn.dataset.key = b; // CSS用
+  btn.dataset.key = b;
   btn.onclick = () => handleInput(b);
   container.appendChild(btn);
 });
 
-// ===== フォント（x,yイタリック） =====
+// ===== 表示フォーマット =====
 function formatExpression(expr) {
   return expr
+    .replace(/\+/g, "＋")
+    .replace(/-/g, "－")
     .replace(/x/g, '<span class="var">x</span>')
     .replace(/y/g, '<span class="var">y</span>');
 }
@@ -35,7 +37,8 @@ function updateDisplay() {
 
 // ===== 入力処理 =====
 function handleInput(val){
-  if(val === "←"){
+
+  if(val === "消"){
     currentAnswer = currentAnswer.slice(0,-1);
 
   }else if(val === "OK"){
@@ -43,13 +46,17 @@ function handleInput(val){
     return;
 
   }else{
+    // 表示→内部変換
+    if(val === "＋") val = "+";
+    if(val === "－") val = "-";
+
     currentAnswer += val;
   }
 
   updateDisplay();
 }
 
-// ===== 項フォーマット（単体） =====
+// ===== 項フォーマット =====
 function formatTerm(coef, variable) {
   if (coef === 0) return null;
 
@@ -59,18 +66,16 @@ function formatTerm(coef, variable) {
   return coef + variable;
 }
 
-// ===== 多項式フォーマット（正解用） =====
+// ===== 多項式フォーマット（正解）=====
 function formatPolynomial(xCoef, yCoef) {
   let parts = [];
 
-  // x項
   if (xCoef !== 0) {
     if (xCoef === 1) parts.push("x");
     else if (xCoef === -1) parts.push("-x");
     else parts.push(xCoef + "x");
   }
 
-  // y項
   if (yCoef !== 0) {
     if (yCoef === 1) parts.push("y");
     else if (yCoef === -1) parts.push("-y");
@@ -93,7 +98,6 @@ function newQuestion(){
 
   let a = rand(), b = rand(), c = rand(), d = rand();
 
-  // 問題の項を生成（0除去・1処理）
   let terms = [
     formatTerm(a, "x"),
     formatTerm(b, "y"),
@@ -103,10 +107,8 @@ function newQuestion(){
 
   let expr = terms.join(" + ").replace(/\+\s\-/g, "- ");
 
-  // 表示（x,yイタリック）
   questionEl.innerHTML = formatExpression(expr);
 
-  // 正解生成（整理済み）
   const xSum = a + c;
   const ySum = b + d;
 
@@ -116,12 +118,12 @@ function newQuestion(){
 // ===== 採点 =====
 function checkAnswer(){
   if(currentAnswer === correct){
-    alert("正解！");
+    alert("正解！よくできました！");
     newQuestion();
     currentAnswer = "";
     updateDisplay();
   }else{
-    alert("もう一度！");
+    alert("もう一度やってみよう！");
   }
 }
 
