@@ -22,15 +22,18 @@ buttons.forEach(b => {
   let interval = null;
   let timeout = null;
 
-  btn.addEventListener("pointerdown", () => {
-    handleInput(b);
+btn.addEventListener("pointerdown", () => {
+  handleInput(b);
 
-    timeout = setTimeout(() => {
-      interval = setInterval(() => {
-        handleInput(b);
-      }, b === "消" ? 60 : 100);
-    }, 300);
-  });
+  // ★ OKは長押し無効（ここが追加ポイント）
+  if (b === "OK") return;
+
+  timeout = setTimeout(() => {
+    interval = setInterval(() => {
+      handleInput(b);
+    }, b === "消" ? 60 : 100);
+  }, 300);
+});
 
   const stop = () => {
     clearTimeout(timeout);
@@ -40,7 +43,8 @@ buttons.forEach(b => {
   btn.addEventListener("pointerup", stop);
   btn.addEventListener("pointerleave", stop);
   btn.addEventListener("pointercancel", stop);
-
+  btn.addEventListener("touchend", stop);
+  btn.addEventListener("touchcancel", stop);
   container.appendChild(btn);
 });
 // ===== 表示フォーマット =====
