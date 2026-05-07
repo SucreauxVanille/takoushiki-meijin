@@ -22,29 +22,7 @@ body {
   font-weight: normal;
 }
 
-// トースト
-#toast {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
 
-  padding: 20px 28px;
-  border-radius: 16px;
-
-  font-size: clamp(32px, 10vw, 64px);
-  font-weight: bold;
-  text-align: center;
-
-  color: white;
-  background: rgba(0, 0, 0, 0.85);
-
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.25s ease;
-
-  z-index: 999;
-}
 
 /* 表示時 */
 #toast.show {
@@ -181,4 +159,27 @@ button:active {
   button {
     min-height: 70px; /* スマホは少し大きめ */
   }
+}
+// トースト
+#toast {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+
+  padding: 20px 28px;
+  border-radius: 16px;
+
+  font-size: clamp(32px, 10vw, 64px);
+  font-weight: bold;
+  text-align: center;
+
+  color: white;
+  background: rgba(0, 0, 0, 0.85);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+
+  z-index: 999;
 }
