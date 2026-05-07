@@ -173,6 +173,15 @@ button:active {
 
   font-size: clamp(32px, 10vw, 64px);
   font-weight: bold;
+
+  font-family:
+    "Hiragino Sans",
+    "Yu Gothic",
+    "Noto Sans JP",
+    sans-serif;
+
+  letter-spacing: 0.05em;
+
   text-align: center;
 
   color: white;
